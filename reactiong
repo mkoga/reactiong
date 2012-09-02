@@ -1,0 +1,113 @@
+#! /usr/bin/env ruby
+
+class ReactionG
+
+  MOODS = {
+    :disgust => :disgust,
+    :abort => :disgust,
+    :amazed => :amazed,
+    :excited => :amazed,
+    :nailed_it => :amazed,
+    :clapping => :clapping,
+    :sad => :sad,
+    :upset => :sad,
+    :angry => :sad,
+    :faking_interest => :faking_interest,
+    :agreement => :agreement,
+    :not_bad => :agreement,
+    :popcorn => :popcorn,
+    :dis_gun_b_good => :popcorn,
+    :upvotes => :upvotes,
+    :didnt_read => :didnt_read,
+    :downvotes => :downvotes,
+    :haters => :haters,
+    :fuck_you => :haters,
+    :umad => :haters,
+    :deal_with_it => :deal_with_it,
+    :not_giving_a_fuck => :deal_with_it,
+    :obama => :obama,
+    :erections => :erections,
+    :fapping => :erections,
+    :lol => :lol,
+    :laughing => :lol,
+    :boobs => :boobs,
+    :mlp => :mlp,
+    :swag => :swag,
+    :party_hard => :swag,
+    :misc => :misc,
+    :miscellaneous => :misc
+  }
+
+  REACTIONS = {
+    :disgust => %w(l2sJi I0Svc 816uC IzUaG MDRw2 BVzQk Ph6Ei 3Usiw Q2BmE Vi8JI sa2wH dguRq whzga CaTwx pKnRM UyLJJ QbUjD hbikk Mxkev KmSKh antqm UnFnF cLcKj qUrIF CgrMo tRCcX wpfEv G0qXi EqMJ9 HPK0H 5VZK9 9ylWV F1NXX N6uZV jHMVR OB1qc Q2zYD mRjo1 OcVvZ 0gONc eZ6La JUJOJ tQhFS rRGZ1 tw7aQ 1yBqi hDc6O pejxB vuI5f X6KXQ HjNMr HpvWY lfgl7 dyeHb eATeG ZfO3v fuEKf 9dVZG 2W7lX G2vGB PNlTK Gn04H IiHln 9cXi1 HqCQJ iQlNt e53vv bLWLM nc9j0 5ByyB 9Xy2Y HC59p dqVTD Jwm2y tl89G cMP7p Duuim kzXvt xBGCu VcAnC ZNYtm KIyGP zKBKH yRe6x WJuj7 Cqyno UdP1L HW9Kn AqlRr CKqbO AuR6z qNSfP Lf8LR PKwyw HQvRL z7RNy f5cbQ h78Zw),
+    :amazed => %w(thj3F lf0kR TI793 oeXlZ ifYUt d7TBk gu8UW hPwa8 J7xGk MTXzH cPIWd nPPIr Aouil qtmXq uZwO3 y61Za 0rg9W rVpRy 7JN8L UKQTf pguAs d0l2c Ljaw6 WxwzX ng2CT uLj0u rYxKT HuLuD Ge2wp GdkSv AGEb2 anslK DfrL6 L24cy LdfdP QVHid YneTj cR5TX i9fPA lah61 K0dpR tCFSc QzPcN HaKBQ VPlDP 0JNXn E2MkT 04Fxv NaMiw gPOM4 RPZKD jgKpa 8mhxt vv49C jd2BS 0TxTN 2dPuX ivb7Q lQ9Ln ELP7G AdAhA VXlD9 HD4tg wguX3 p1k64 DEoQC UWy7I Dv3a7 x5ZU4 cG6kn VvqOo PqIYN DTUvG NU76d 1OIrf 5nlSP aP07e lrv7v 7Bkc2 ETmsf 15SFz wY16A IZU7v pGOmE QcpgV TvceW SgWam JXhxm DwLHl 06ZTQ),
+    :clapping => %w(2sREC 3w1ej MIj6o EqRJH JSBTl s3AoP ZYKBr yGBuI kQWV2 mhyqw sWiS2 Ichev bhKp2 Jdvdr SBt3o u8awa NAk6C iFdT0 wZuxj lNEg8 8NAub 1RPcr NnBHS Ft1Bt YlE2U 8UuPv AtuzC vV9zj),
+    :sad => %w(fkLF9 odydm Rav8F s8c3q JKHTl S3VpN rkZq7 Opv98 U2v0g dAgeI LbEbK fQXqO WeXPc HYkqC E7J3W kVBDO 5YjcW t5BwT mtMol xcmP1 NpAbl 1u2L0 CMRx3 KxvRn PNYRZ jVzU8 683ID oov56 FxB3m XWAvo SSLWS Dg5J7 vmcCc q3O8A 8ByaI HFp4N 8DE8J 1Kq6I TkLVk Gi0EG 62qgY MbiXv oWUcA 1vxHz z7uwD yCbCV MsUI5 jCQJt MzTDX CLcKV ebdJb ACPOb ayaqn TBcXS yshiM FPkYs D9dQr n4mbn SdbdK rxE7M nyanf NChLj xoISl hpJfM 6UA6P eCDnj 4A8by sez4T 1ib24 8vb3r Z7k2k KWA6j),
+    :faking_interest => %w(S25EO zlwAn Wi6jB zN9vs VMiF2 Agci8 fIYkZ FcnpJ MyGV2 eJOB0 BIx6i QcG1r gwVLi),
+    :agreement => %w(vESj1 Mlpfb 9dt8z 0s8FT d0Jmt p6zsA xuzX5 guoze G6ZF9 Op9dO ueeEW mCPIs q3DOZ la0eW n1Afo 3lFHq sqBmE nsfSA PKXGm Wxyrl Dn1MB uLVEt xedYi 6EkyY ZMxt4 Qdig0 TGAtq vgddc 0UBgW CJ8fx YPkYg HZsJV 4stAX e2Vo0 GIsxa NZJhP epP1Z 8expm p17Zs Evdwm t307B 5mgLz bepXT 3s3MY ayxIJ 1QecE),
+    :popcorn => %w(Je3OP hinAw Awp0c YCzMI I8Oum UGOBF yGWbw D1cEM WJGZ5 7naA9 cXyob 2fPdH 79Yeo KaoXj 62iwz G97HU GkmRr PYPUJ BawxZ sOksm Fz6am czRZI DQ8HA uh5A6 9jRYJ),
+    :upvotes => %w(czBYh iC8UW I8YHS bsxsh n3uQS RxFaO SUuXt Of6dx g7o6B 15suq oU60R fcw8g CrLwj ndtyf IiiKc 9DmQD ftiIF uVtn9 fY7Ca 4zZLO iYrPx hWLkh 4kWW5 42KkX DraPZ Cp857 xRHsy x75Zs ivUry unlIs p6hbU 3qF2J tnabw),
+    :didnt_read => %w(P0GPM emlsx 16MCf qfeZm CeSLc Ahn8B vCCqc dnMjc SbISy JYZRt),
+    :downvotes => %w(IIhBG MDdJq fzsdL 9jwEH VSYRt 1h53v RjZ8w nvk5F cwlx5 2PZs2 YHJiM 976aF WO8g4 NNMd4 OZjdM UxRTd aeexs 4s2ZH o5lIJ bMxDw 8DD2M eD2gQ hXmGo Ckztq),
+    :haters => %w(hb1Pg iyZiD pqmDo YqOjg ROZIQ kJVRA NWttB uDGXf IQPqI jeVFy sFJkZ cerXL pKaSx HS3Qj juatk Tjz5Z lDCal hAlWB IZy1P XbD0k wQGT7 7M30q HzTR9 eYdaj il0cs yyCSX 91oLA gcwB9 I268V AIJ34 PdfBD bnMGL XKKuY I0lWc 7ON43 zAHjn qk6eu 45wLn NZx9S uFTEq bEjHW LYpl5 Fqc0h eiXiX ARimQ 2g8Se NvJ8I aSJGX EpKZl),
+    :deal_with_it => %w(TAd5e tQOMO 5TKih ds16H 5LGE1 EOl6j GUjSD cHbW9 3evlc v352T WRv1h 9jIpx PfK3w O01XE R9ALS 7GLeJ SfRkl Gyf6p em4yL IZPcV XGM8L X8I8V 1q6CV LPMjw RdGTA Y3tYU 4m35Y AoYyT rnwF0 xn4rF H5z9g f6i8d zmbrt UTo7S niYhK VWa8T dc78P W3Wvy 7A4ny TIFHP c7u3A ShpEo UkVej 0tjr7 nn7xg yL6H0 CdW0L),
+    :obama => %w(BFXsB C38NF tUJMY jL3tw IJEKN a0eq3 HDxzv rnxHw),
+    :erections => %w(zm6Kr qZp05 h2JFx Pkh0p uLcDa m2QPy oZJd6 YbsZa He1X2 QNAJc N0zYp xgHnX EKdJf Oq20a AyP5q 0LVhd w7UYe AqKs4 4E3nm YgFO5 LLm87 sadKa jxOQC 7ZJTi h6s0G HOIog),
+    :lol => %w(yFtfY HA5Pd SiA2Q BFQBW yqBpz lyCUq UbHSq VJAP4 RMzT1 z7AyT sqpg0 HZg8e yxJJX i4x5g 4crab idAaA LRz2r Mb0O4 xrU4X VhdHz A5pV0),
+    :boobs => %w(vtZWH wHvc1 ZoZrI tjYsq ERz8A yZmsJ 46PzX Ey423 n9O6D 54LN8 LeTc1 drysz Zpf56 N7nUG BXsQp mVoRj bdvLe vHcBD XxYu0 aJgeo nbZys Z42vu R74Mp DA58Z CZ2An L4fJQ Yocs4 wYM4K OZh6k qzC90 OERLW),
+    :mlp => %w(VSYRt h1AEe WGYw1 5lMiP fNSru RlCDg KQbgS KhF5f F2Y7W 0kYzv CXfzu s3J9B VWdY7 r39a5 JJm3m bNaiN YawRP GL9uh o8IMg pDq60 0Rncc R8H2C Veugo UJpwz cOafP oLgaA NoZnr 9u9W6 J1BYm R9oos 3bQA7 ulgY9 UmIkg FxOSp hQMgo fcpQW LTmji Ypo0z jVfC8 Mj0in u6pYj vK2D9 qhGnG f3Z4I y1bSH HSMlP),
+    :swag => %w(Q5y7E tWxtC Ae202 dWJcu jnx2d d8EOp),
+    :misc => %w(ElCPi LFyp0 YxIzR Mk76H RIFbc fkE8z vUryM K9RQh Aqnha d2xZE 10gvO NInAD bEdpq 7uaxn 3qrrJ ATeJY LFVsG q7Dyb Fmboi KOvJY D9lWM spQLb jQIVo tcMgo ddNKi BSkfq tjvQt pVnUC vOMIJ uzwPi K2o7L 5Fua0 Ps6ii o1n5J ZX5gQ n93kz X9PJI kJF8d BzBFW ImLH8 Bay1l dbKVW N7Iqd BZOGC Gw3v7 LrIc6 S9FRN gQaFs qERX2 TFSQE Xz58i tdHeY X0Zcs 31dZ8 e9DfD QClMT W4bTe vAzsm oXYzZ RlZHl TqMS8 G1UIX Fbb0W 3x1AN DMC5r 0lTp9 aLaIn 7Srvt 4PPnw PScpN nhShT scUXO pWmgy F8Kwz smeZ3 S6c4V qdUak VL0Wr QbTTn ovLu4 any2L RgQhJ D62T9 B6OkR THxJv Z7zNp 8T5fP Fwbl3 69DcG bs2Mf Idj2H GIhOC qJu3t KSHu4 FCEYI ZVq46 X9lIU a0tH7 Eh2R3 6Eszw zRGiI R4efr 445xA aXAWd NVlpG c2nBF dLdoS 1SjS6 WMejB IO3j8 zrVEy WcpOt 3SBPe 8lxyr vV8Sk EeWfX Km5ou uVqMR 6VvCj nCCUV)
+  }
+
+  def initialize(args)
+    parse(args)
+  end
+
+  def parse(args)
+    case args.first
+      when '', '-h', '--help', 'help'; usage
+      when 'list'
+        MOODS.keys.sort.each do |mood_key|
+          puts mood_key.to_s.split("_").collect { |p| p.capitalize }.join(" ")
+        end
+      else
+        mood = args.first.split(" ").join("_").downcase
+        mood_code = mood_picker(mood)
+        puts url(mood_code)
+      end
+  end
+
+  def usage
+    puts <<-EOF
+Usage: #{File.basename(__FILE__)} MOOD
+    list          List available moods.
+    help          Show this menu.
+
+    EOF
+  end
+
+  def mood_picker(mood)
+    mood_key = MOODS[mood.to_sym]
+    error("Please pick a mood from the list.") if mood_key.nil?
+    moods = REACTIONS[mood_key]
+    moods[rand(moods.size)]
+  end
+
+  def url(mood_code)
+    "http://i.imgur.com/%s.gif" % mood_code
+  end
+
+  private
+  
+  def error(msg)
+    puts msg
+    exit 1
+  end
+
+end
+
+
+if __FILE__ == $0
+  ReactionG.new(ARGV)
+end
