@@ -65,6 +65,11 @@ class ReactionG
   end
 
   def parse(args)
+    if args.empty?
+      usage
+      exit 0
+    end
+
     case args.first
       when '', '-h', '--help', 'help'; usage
       when 'list'
